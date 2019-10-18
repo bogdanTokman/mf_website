@@ -123,7 +123,9 @@
   </style>
   <script>
     var pager = [
-      ['home.html', '01', 'Home', 'Home page']
+      ['home.html', '01', 'Home', 'Home page'],
+      ['about.html', '02', 'About', 'About page'],
+      ['products.html', '03', 'Products', 'Products page']
     ];
   </script>
   <header><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 841.9 595.3" style="enable-background:new 0 0 841.9 595.3;" xml:space="preserve">
@@ -158,6 +160,7 @@
   <script>
     $(document).ready(function()
     {
+      console.log('here')
       var links = '';
       for (var i = 0, length = pager.length; i < length; i++)
       {
