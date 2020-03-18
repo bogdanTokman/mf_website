@@ -12156,7 +12156,7 @@ var Home = function () {
     this.firstScreen = '.first_screen_new';
 
     this.secondScreen = '.clients__screen';
-    this.secondTween = new _gsap.TimelineMax().set(['' + this.secondScreen], { opacity: 0 });
+    this.secondTween = new _gsap.TimelineMax().set([this.secondScreen + ' h3', this.secondScreen + ' .content__block'], { opacity: 0 });
 
     this.contetItems = '.clients__items > div';
 
@@ -12332,7 +12332,7 @@ var Home = function () {
 
       if ($('' + this.secondScreen).hasClass(_helpers.css.finished) || this.secondTween.isActive()) return;
 
-      this.secondTween.to('' + this.secondScreen, .8, { opacity: 1, ease: _gsap.Power1.easeOut }, .5).fromTo(this.secondScreen + ' h3', .7, { y: -20, opacity: 0 }, {
+      this.secondTween.to([this.secondScreen + ' .content__block'], .8, { opacity: 1, ease: _gsap.Power1.easeOut }, .5).fromTo(this.secondScreen + ' h3', .7, { y: -20, opacity: 0 }, {
         y: 0,
         opacity: 1,
         ease: _gsap.Power1.easeOut
