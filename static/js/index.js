@@ -3303,6 +3303,60 @@ var Common = exports.Common = function () {
   }
 
   _createClass(Common, [{
+    key: 'initCtaBlock',
+    value: function initCtaBlock() {
+      $('.form > .row > input').keypress(function () {
+        if (Common.validateEmail($(this).val())) {
+          $(this).removeClass('error');
+          $(this).addClass('ok');
+
+          $('.icon > .error').removeClass(_helpers.css.active);
+          $('.icon > .ok').addClass(_helpers.css.active);
+          return;
+        }
+
+        $('.icon > .ok').removeClass(_helpers.css.active);
+        $('.icon > .error').addClass(_helpers.css.active);
+
+        $(this).removeClass('ok');
+        $(this).addClass('error');
+      });
+
+      $('.form .btn').click(function () {
+        var $email = $('.form > .row > input');
+        var email = $email.val();
+
+        if (Common.validateEmail(email)) {
+          $email.removeClass('error');
+          $email.addClass('ok');
+
+          $('.icon > .error').removeClass(_helpers.css.active);
+          $('.icon > .ok').addClass(_helpers.css.active);
+
+          var path = '/emails';
+
+          if (window.language !== 'en') {
+            path = '/' + window.language + '/emails';
+          }
+
+          $.post(path, {
+            email: email,
+            type: 'email_form'
+          }, function (response) {
+            $('.form').html(response);
+            window.dataLayer.push({ event: 'formsend' });
+          });
+          return;
+        }
+
+        $('.icon > .ok').removeClass(_helpers.css.active);
+        $('.icon > .error').addClass(_helpers.css.active);
+
+        $email.removeClass('ok');
+        $email.addClass('error');
+      });
+    }
+  }, {
     key: 'initAnimation',
     value: function initAnimation() {
       new _gsap.TimelineMax().fromTo(['header', '.hamburger'], .6, { opacity: 0, y: -70, backgroundColor: 'transparent' }, {
@@ -3393,6 +3447,20 @@ var Common = exports.Common = function () {
         _gsap.TweenLite.to($('.lang___item'), .5, { opacity: 0, zIndex: 2, visibility: 'hidden' });
       }, function () {});
 
+      var tween = new _gsap.TimelineMax();
+
+      $('.lang').click(function () {
+        var $this = $(this);
+
+        if (!$this.hasClass('toggle')) {
+          $this.addClass('toggle');
+          tween.to($('.lang___item'), .5, { opacity: 1, zIndex: 2, visibility: 'visible' });
+        } else {
+          $this.removeClass('toggle');
+          tween.to($('.lang___item'), .5, { opacity: 0, zIndex: 2, visibility: 'hidden' });
+        }
+      });
+
       $('.lang').hover(function () {
         _gsap.TweenLite.to($('.sub_menu:eq(0)'), .5, { opacity: 0, zIndex: -1, visibility: 'hidden' });
         _gsap.TweenLite.to($('.lang___item'), .5, { opacity: 1, zIndex: 2, visibility: 'visible' });
@@ -3459,6 +3527,7 @@ var Common = exports.Common = function () {
   }, {
     key: 'initCommonCtaBlock',
     value: function initCommonCtaBlock() {
+      if (_helpers.Resp.isTablet) return;
       var $item = $('.cta_block');
 
       var _this = this;
@@ -9553,9 +9622,8 @@ var Home = function () {
     this.contetItems = '.clients__items > div';
 
     this.thirdScreen = '.products__screen';
-    this.thirdTween = new _gsap.TimelineMax().set(['' + this.thirdScreen], { opacity: 0 });
-
     this.thirdScreenContentItmes = '.products__list > .product__item';
+    this.thirdTween = new _gsap.TimelineMax().set(['' + this.thirdScreen, '' + this.thirdScreenContentItmes], { opacity: 0 });
 
     this.fourthScreen = '.trustworthy';
     this.fourthTween = new _gsap.TimelineMax().set(['' + this.fourthScreen], { opacity: 0 });
@@ -9738,7 +9806,7 @@ var Home = function () {
           var $item = $(selector);
           if ((0, _helpers.isScrolledIntoView)($item) && !$item.hasClass(_helpers.css.active)) {
             $item.addClass(_helpers.css.active);
-            var timeLine = new _gsap.TimelineMax();
+            var timeLine = new _gsap.TimelineMax().to('' + selector, .1, { opacity: 1, ease: _gsap.Power1.easeOut }, .1);
             timeLine.fromTo(selector + '.' + _helpers.css.active + '  .sub__info', .7, { y: -30, opacity: 0 }, {
               y: 0,
               opacity: 1,
@@ -10321,9 +10389,11 @@ var News = function () {
     this.firstScreen = '.head_blog_screen';
     this.firstTween = new _gsap.TimelineMax({ delay: .9 });
 
+    this.initMoreNews();
+
+    if (_helpers.Resp.isTablet) return;
     this.init();
     this.initFirstScreenParallax();
-    this.initMoreNews();
   }
 
   _createClass(News, [{
@@ -10963,12 +11033,15 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _gsap = __webpack_require__(1);
 
+var _helpers = __webpack_require__(2);
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Article = function () {
   function Article() {
     _classCallCheck(this, Article);
 
+    if (_helpers.Resp.isTablet) return;
     this.section = 'section';
 
     this.firstScreen = '.head__screen';
@@ -11019,17 +11092,19 @@ var Article = function () {
       var datePosition = $('.article__date').offset();
       var socialPosition = $('#social_side_links').offset();
 
+      var width = _helpers.Resp.isDesk ? '675px' : '520px';
+
       $(window).scroll(function () {
         if ($(window).scrollTop() > datePosition.top - 115) {
           $('.article__date').css('position', 'fixed').css('top', '105px');
         } else {
-          $('.article__date').css('position', 'absolute').css('top', '675px');
+          $('.article__date').css('position', 'absolute').css('top', width);
         }
 
         if ($(window).scrollTop() > socialPosition.top - 115) {
           $('#social_side_links').css('position', 'fixed').css('top', '105px');
         } else {
-          $('#social_side_links').css('position', 'absolute').css('top', '675px');
+          $('#social_side_links').css('position', 'absolute').css('top', width);
         }
 
         var offset = $('.cta_block').offset().top - 200;
@@ -11070,6 +11145,8 @@ var Solutions = function () {
   function Solutions() {
     _classCallCheck(this, Solutions);
 
+    this.initWords();
+    if (_helpers.Resp.isTablet) return;
     this.firstTween = new _gsap.TimelineMax();
     this.firstScreen = '.solutions__';
     this.section = 'section';
@@ -11088,7 +11165,6 @@ var Solutions = function () {
       var _this = this;
 
       this.initFirstScreen();
-      this.initWords();
       this.initFirstScreen();
 
       _helpers.$window.on('scroll', function (e) {
